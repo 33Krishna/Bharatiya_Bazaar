@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vendor Registration | Bharatiya Bazaar (भारतीय बाज़ार)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --navy: #0d1b2a;
+      --navy-2: #14263b;
+      --teal: #0f9d9d;
+      --teal-dark: #0b7c7c;
+      --amber: #f5a623;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #17233a;
+      --muted: #64748b;
+      --border: #dbe4ef;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --info: #0369a1;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow: 0 10px 30px rgba(13, 27, 42, 0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Inter", "Noto Sans Devanagari", sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4 { font-family: "Poppins", "Noto Sans Devanagari", sans-serif; }
+
+    .topbar {
+      background: var(--navy); color: #fff; padding: 14px 22px;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; color: #fff; }
+    .brand-badge {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle at center, var(--amber) 0 26%, var(--teal) 27% 54%, var(--navy-2) 55% 100%);
+    }
+
+    .container { width: min(800px, calc(100% - 32px)); margin: 24px auto 40px; }
+
+    .page-head { margin-bottom: 20px; text-align: center; }
+    .page-head h1 { font-size: clamp(24px, 3vw, 32px); color: var(--navy); margin-bottom: 4px; }
+    .page-head p { color: var(--muted); font-size: 14.5px; }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-card); box-shadow: var(--shadow);
+    }
+
+    .panel { padding: 26px; margin-bottom: 16px; }
+    .panel h2 { font-size: 19px; color: var(--navy); margin-bottom: 6px; }
+    .panel p.sub { font-size: 13.5px; color: var(--muted); margin-bottom: 16px; }
+
+    .stepper { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
+    .step-dot {
+      display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700;
+      color: var(--muted); padding: 7px 14px; border-radius: 999px; border: 1px solid var(--border);
+      background: #fff;
+    }
+    .step-dot.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .step-dot.done { background: #e8f8ee; color: var(--success); border-color: #b7e4c7; }
+
+    .badge { display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .badge.success { background: #e8f8ee; color: var(--success); }
+    .badge.warning { background: #fff4e0; color: var(--warning); }
+    .badge.info { background: #e8f6ff; color: var(--info); }
+
+    .note {
+      border-left: 4px solid var(--teal); background: #f3fbfb; color: #155e5e;
+      padding: 12px 14px; border-radius: 8px; font-size: 13px; margin: 14px 0;
+    }
+    .note.warning { border-left-color: var(--warning); background: #fff8e9; color: #7c4a03; }
+    .note.info { border-left-color: var(--info); background: #e8f4fd; color: #0c4a6e; }
+    .note.danger { border-left-color: var(--danger); background: #fee2e2; color: #991b1b; }
+    .note.success { border-left-color: var(--success); background: #ecfdf5; color: #065f46; }
+
+    .field-group { margin-bottom: 16px; }
+    .field-label { display: block; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .field-label .hindi { font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 4px; }
+
+    input, select, textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: 10px;
+      padding: 11px 14px; font-size: 14.5px; color: var(--navy); background: #fff; outline: none;
+      transition: border-color 0.2s ease;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(15, 157, 157, 0.12); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .btn-group { display: flex; gap: 12px; margin-top: 22px; }
+    .btn-primary {
+      flex: 1; background: var(--teal); color: #fff; border: none;
+      padding: 13px 18px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background 0.2s ease;
+    }
+    .btn-primary:hover { background: var(--teal-dark); }
+    .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: transparent; color: var(--navy); border: 1px solid var(--border);
+      padding: 13px 18px; border-radius: var(--radius-btn); font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn-ghost:hover { background: #f1f5f9; }
+
+    .agreement-section {
+      border: 1px solid var(--border); border-radius: 10px; padding: 14px;
+      background: #fafcff; margin-bottom: 12px;
+    }
+    .agreement-section h4 { font-size: 14px; color: var(--navy); margin-bottom: 6px; }
+    .agreement-section ul { padding-left: 20px; font-size: 13px; color: var(--muted); }
+    .agreement-section li { margin-bottom: 4px; }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 640px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .btn-group { flex-direction: column-reverse; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="bb-bharatiya-bazaar-v2.html" class="brand">
+      <span class="brand-badge"></span>
+      <span>Bharatiya Bazaar · भारतीय बाज़ार</span>
+    </a>
+    <div>
+      <a href="bb-vendor-dashboard.html" style="color:#fff; text-decoration:none; font-size:13.5px; font-weight:600; padding:6px 12px; border:1px solid rgba(255,255,255,0.3); border-radius:6px;">Vendor Login →</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-head">
+      <h1>Partner Vendor Onboarding</h1>
+      <p>विक्रेता पंजीकरण · Join our verified local commerce network</p>
+    </section>
+
+    <!-- STEP PROGRESS BAR -->
+    <div class="stepper">
+      <div id="step1Dot" class="step-dot active"><span>1</span> Basic Details</div>
+      <div id="step2Dot" class="step-dot"><span>2</span> Business Info</div>
+      <div id="step3Dot" class="step-dot"><span>3</span> Agreement & Deposit</div>
+      <div id="step4Dot" class="step-dot"><span>4</span> Success & Activation</div>
+    </div>
+
+    <!-- ERROR / ALERT BANNER -->
+    <div id="alertBox" class="note danger hidden"></div>
+
+    <!-- STEP 1: BASIC DETAILS -->
+    <section id="step1" class="card panel">
+      <h2>Step 1 — Owner & Contact Details</h2>
+      <p class="sub">मालिक एवं संपर्क विवरण · Enter your personal and contact information</p>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="ownerName">Owner Full Name <span class="hindi">(मालिक का नाम)</span> *</label>
+          <input type="text" id="ownerName" placeholder="e.g. Ramesh Kumar Sharma" required />
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="mobile">Mobile Number <span class="hindi">(मोबाइल नंबर)</span> *</label>
+          <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10" required />
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="password">Account Password <span class="hindi">(पासवर्ड)</span> *</label>
+          <input type="password" id="password" placeholder="Min. 6 characters" required />
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="pinCode">Store PIN Code <span class="hindi">(पिन कोड)</span> *</label>
+          <input type="text" id="pinCode" placeholder="6-digit postal PIN" maxlength="6" required />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="address">Full Store Address <span class="hindi">(दुकान का पूरा पता)</span></label>
+        <textarea id="address" rows="2" placeholder="Shop/Building No., Street, Area, City, State"></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-primary" onclick="validateAndGoToStep(2)">Continue to Business Info →</button>
+      </div>
+    </section>
+
+    <!-- STEP 2: BUSINESS & CATEGORY -->
+    <section id="step2" class="card panel hidden">
+      <h2>Step 2 — Business & Category Details</h2>
+      <p class="sub">व्यापार एवं श्रेणी विवरण · Set your business category and commission margin</p>
+
+      <div class="field-group">
+        <label class="field-label" for="businessName">Store / Business Name <span class="hindi">(दुकान / व्यापार का नाम)</span> *</label>
+        <input type="text" id="businessName" placeholder="e.g. Sharma Kirana & General Store" required />
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="category">Business Category <span class="hindi">(व्यापार श्रेणी)</span> *</label>
+          <select id="category" onchange="updateCategoryMarginDisplay()">
+            <option value="GROCERY">Grocery (किराना / राशन) — 7.0% Margin</option>
+            <option value="APPAREL">Apparel / Clothing (कपड़ा / परिधान) — 15.0% Margin</option>
+            <option value="ELECTRONICS">Electronics & Mobile (इलेक्ट्रॉनिक्स) — 10.0% Margin</option>
+            <option value="RESTAURANT">Restaurant & Cafe (खान-पान) — 12.0% Margin</option>
+            <option value="HEALTHCARE">Healthcare & Pharmacy (दवाइयां) — 10.0% Margin</option>
+            <option value="SERVICES">Services (सेवाएं) — 20.0% Margin</option>
+            <option value="GENERAL">General Retail (सामान्य खुदरा) — 10.0% Margin</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="entityType">Entity Type <span class="hindi">(इकाई प्रकार)</span> *</label>
+          <select id="entityType">
+            <option value="INDIVIDUAL">Individual / Proprietorship (व्यक्तिगत)</option>
+            <option value="COMPANY">Company / Partnership / LLP (कंपनी)</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="marginPreviewNote" class="note info">
+        <strong>Category Margin Rate: 7.0%</strong><br />
+        Customer purchases fund Setu Kosh commissions through this unified category margin.
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="panNumber">PAN Number <span class="hindi">(पैन नंबर)</span> *</label>
+          <input type="text" id="panNumber" placeholder="e.g. ABCDE1234F" maxlength="10" style="text-transform:uppercase;" required />
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="gstin">GSTIN <span class="hindi">(जीएसटीआईएन - वैकल्पिक)</span></label>
+          <input type="text" id="gstin" placeholder="15-digit GSTIN (optional)" maxlength="15" style="text-transform:uppercase;" />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="referrerCode">Referrer Member Code <span class="hindi">(रेफरल सदस्य कोड - वैकल्पिक)</span></label>
+        <input type="text" id="referrerCode" placeholder="Enter Member Code (e.g. M10012) who introduced you" />
+        <div style="font-size:12px; color:var(--muted); margin-top:4px;">
+          The referring member earns a permanent 0.25% referral bonus on all your store sales (First-referrer-wins).
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-ghost" onclick="goToStep(1)">← Back</button>
+        <button type="button" class="btn-primary" onclick="validateAndGoToStep(3)">Continue to Terms & Deposit →</button>
+      </div>
+    </section>
+
+    <!-- STEP 3: AGREEMENT & SECURITY DEPOSIT -->
+    <section id="step3" class="card panel hidden">
+      <h2>Step 3 — Vendor Terms & Security Deposit</h2>
+      <p class="sub">शर्तें एवं सुरक्षा जमा · Review operational guidelines and confirm registration</p>
+
+      <div class="agreement-section">
+        <h4>1. Security Deposit Mode & Policy</h4>
+        <ul>
+          <li><strong>Mandatory Refundable Deposit:</strong> ₹5,000 (500,000 paise) recorded at platform onboarding.</li>
+          <li><strong>Deposit Protection:</strong> Protects member commissions and covers settlement reconciliation.</li>
+          <li><strong>Freeze Threshold:</strong> If your settlement wallet falls below ₹500, deposit freeze state is engaged until replenished.</li>
+        </ul>
+      </div>
+
+      <div class="agreement-section">
+        <h4>2. Settlement Cycle & TDS Compliance</h4>
+        <ul>
+          <li><strong>Weekly Settlement:</strong> Every Monday at 00:00 UTC for previous week's cleared sales.</li>
+          <li><strong>TDS Section 194C:</strong> 1% (Individual) / 2% (Company) on gross sales exceeding ₹30k single or ₹1L aggregate.</li>
+          <li><strong>On-Demand Early Settlement:</strong> Available at any time with flat ₹250 administrative fee.</li>
+        </ul>
+      </div>
+
+      <div class="agreement-section">
+        <h4>3. Inactivity Lifecycle</h4>
+        <ul>
+          <li><strong>31 Days Inactive:</strong> Account marked INACTIVE if no sales recorded.</li>
+          <li><strong>91 Days Inactive:</strong> Account marked FROZEN; settlements halted.</li>
+          <li><strong>181 Days Inactive:</strong> Account permanently CLOSED.</li>
+        </ul>
+      </div>
+
+      <div style="margin:16px 0;">
+        <label style="display:flex; gap:10px; align-items:flex-start; font-size:13.5px; cursor:pointer;">
+          <input type="checkbox" id="agreeTerms" style="width:auto; margin-top:3px;" />
+          <span>I have read, understood, and agree to the Bharatiya Bazaar Vendor Partnership Terms & Conditions.</span>
+        </label>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-ghost" onclick="goToStep(2)">← Back</button>
+        <button type="button" id="btnRegisterSubmit" class="btn-primary" onclick="submitVendorRegistration()">
+          Confirm & Complete Registration (₹5,000 Deposit) ✓
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 4: SUCCESS & ACTIVATION -->
+    <section id="step4" class="card panel hidden" style="text-align:center;">
+      <div style="width:64px; height:64px; border-radius:50%; background:#e8f8ee; color:var(--success); font-size:32px; display:grid; place-items:center; margin:0 auto 16px;">
+        ✓
+      </div>
+      <h2>Vendor Registration Complete!</h2>
+      <p class="sub">आपका विक्रेता खाता सफलतापूर्वक पंजीकृत हो गया है</p>
+
+      <div class="note success" style="text-align:left; margin:16px 0;">
+        <strong>Registration Details:</strong><br />
+        • <strong>Store:</strong> <span id="resBusinessName">-</span><br />
+        • <strong>Vendor ID / Code:</strong> <span id="resVendorCode" style="font-family:monospace; font-weight:700;">-</span><br />
+        • <strong>Category Margin:</strong> <span id="resMarginRate">-</span><br />
+        • <strong>Security Deposit:</strong> ₹5,000.00 (Recorded & Confirmed)<br />
+        • <strong>Account Status:</strong> <span class="badge success">ACTIVE</span>
+      </div>
+
+      <p style="font-size:13.5px; color:var(--muted); margin-bottom:20px;">
+        You can now log in to your Vendor Dashboard to record member purchases, track Setu Kosh counter progress, and view weekly settlements.
+      </p>
+
+      <div class="btn-group">
+        <a href="bb-vendor-dashboard.html" class="btn-primary" style="text-decoration:none;">Go to Vendor Dashboard →</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    const marginRates = {
+      GROCERY: 7.0,
+      APPAREL: 15.0,
+      ELECTRONICS: 10.0,
+      RESTAURANT: 12.0,
+      HEALTHCARE: 10.0,
+      SERVICES: 20.0,
+      GENERAL: 10.0
+    };
+
+    function updateCategoryMarginDisplay() {
+      const cat = document.getElementById("category").value;
+      const rate = marginRates[cat] || 10.0;
+      document.getElementById("marginPreviewNote").innerHTML = `
+        <strong>Category Margin Rate: ${escapeHtml(rate.toFixed(1))}%</strong><br />
+        Customer purchases fund Setu Kosh commissions through this unified category margin.
+      `;
+    }
+
+    function showAlert(msg) {
+      const box = document.getElementById("alertBox");
+      box.textContent = msg;
+      box.classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function clearAlert() {
+      const box = document.getElementById("alertBox");
+      box.textContent = "";
+      box.classList.add("hidden");
+    }
+
+    function goToStep(step) {
+      clearAlert();
+      for (let i = 1; i <= 4; i++) {
+        const panel = document.getElementById(`step${i}`);
+        const dot = document.getElementById(`step${i}Dot`);
+        if (panel) panel.classList.toggle("hidden", i !== step);
+        if (dot) {
+          dot.classList.remove("active", "done");
+          if (i < step) dot.classList.add("done");
+          if (i === step) dot.classList.add("active");
+        }
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function validateAndGoToStep(targetStep) {
+      clearAlert();
+      if (targetStep === 2) {
+        const ownerName = document.getElementById("ownerName").value.trim();
+        const mobile = document.getElementById("mobile").value.trim();
+        const password = document.getElementById("password").value;
+        const pinCode = document.getElementById("pinCode").value.trim();
+
+        if (!ownerName || ownerName.length < 2) {
+          showAlert("Please enter a valid owner name (min. 2 characters).");
+          return;
+        }
+        if (!/^\d{10}$/.test(mobile)) {
+          showAlert("Please enter a valid 10-digit mobile number.");
+          return;
+        }
+        if (!password || password.length < 6) {
+          showAlert("Password must be at least 6 characters.");
+          return;
+        }
+        if (!/^\d{6}$/.test(pinCode)) {
+          showAlert("Please enter a valid 6-digit postal PIN code.");
+          return;
+        }
+        goToStep(2);
+      } else if (targetStep === 3) {
+        const businessName = document.getElementById("businessName").value.trim();
+        const panNumber = document.getElementById("panNumber").value.trim().toUpperCase();
+
+        if (!businessName || businessName.length < 2) {
+          showAlert("Please enter your store/business name.");
+          return;
+        }
+        if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panNumber)) {
+          showAlert("Please enter a valid 10-character PAN number (e.g. ABCDE1234F).");
+          return;
+        }
+        goToStep(3);
+      }
+    }
+
+    async function submitVendorRegistration() {
+      clearAlert();
+      const agree = document.getElementById("agreeTerms").checked;
+      if (!agree) {
+        showAlert("Please accept the Vendor Partnership Terms & Conditions to proceed.");
+        return;
+      }
+
+      const btn = document.getElementById("btnRegisterSubmit");
+      btn.disabled = true;
+      btn.textContent = "Processing Registration...";
+
+      const payload = {
+        name: document.getElementById("ownerName").value.trim(),
+        businessName: document.getElementById("businessName").value.trim(),
+        mobile: document.getElementById("mobile").value.trim(),
+        password: document.getElementById("password").value,
+        pinCode: document.getElementById("pinCode").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        category: document.getElementById("category").value,
+        entityType: document.getElementById("entityType").value,
+        panNumber: document.getElementById("panNumber").value.trim().toUpperCase(),
+        gstin: document.getElementById("gstin").value.trim().toUpperCase() || undefined,
+        referrerCode: document.getElementById("referrerCode").value.trim() || undefined,
+        payoutMethod: "BANK"
+      };
+
+      try {
+        const res = await fetch("/api/vendors/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error?.message || "Registration failed. Please verify details.");
+        }
+
+        const vendor = data.data.vendor;
+        document.getElementById("resBusinessName").textContent = vendor.businessName;
+        document.getElementById("resVendorCode").textContent = vendor.id;
+        document.getElementById("resMarginRate").textContent = `${vendor.marginRatePct}% (${vendor.category})`;
+
+        goToStep(4);
+      } catch (err) {
+        showAlert(err.message || "Network error during registration.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Confirm & Complete Registration (₹5,000 Deposit) ✓";
+      }
+    }
+  </script>
+</body>
+</html>

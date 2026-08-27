@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications &amp; Activity Feed | Bharatiya Bazaar (भारतीय बाज़ार)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --navy: #0d1b2a;
+      --navy-2: #14263b;
+      --teal: #0f9d9d;
+      --teal-dark: #0b7c7c;
+      --amber: #f5a623;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #17233a;
+      --muted: #64748b;
+      --border: #dbe4ef;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --info: #0369a1;
+      --purple: #7c3aed;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow: 0 10px 30px rgba(13, 27, 42, 0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Inter", "Noto Sans Devanagari", sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4 { font-family: "Poppins", "Noto Sans Devanagari", sans-serif; }
+
+    .topbar {
+      background: var(--navy); color: #fff; padding: 14px 22px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; position: sticky; top: 0; z-index: 20;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; color: #fff; }
+    .brand-badge {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle at center, var(--amber) 0 26%, var(--teal) 27% 54%, var(--navy-2) 55% 100%);
+    }
+
+    .member-chip { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.92); }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%; background: var(--teal);
+      display: grid; place-items: center; font-weight: 700; color: #fff;
+    }
+
+    .container { width: min(880px, calc(100% - 32px)); margin: 24px auto 40px; }
+
+    .page-head { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
+    .page-head h1 { font-size: clamp(24px, 3vw, 32px); color: var(--navy); margin-bottom: 4px; }
+    .page-head p { color: var(--muted); font-size: 14.5px; }
+
+    .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav-btn {
+      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none;
+      background: #fff; color: var(--navy); border: 1px solid var(--border);
+    }
+    .nav-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+    .tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 700; cursor: pointer;
+      background: #fff; color: var(--navy); border: 1px solid var(--border);
+    }
+    .tab-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+    .notif-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-card);
+      box-shadow: var(--shadow); padding: 18px; margin-bottom: 12px; display: flex; gap: 14px;
+      align-items: flex-start; transition: transform 0.1s ease;
+    }
+    .notif-card:hover { transform: translateY(-1px); }
+
+    .notif-icon {
+      width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .icon-comm { background: #e8f8ee; color: var(--success); }
+    .icon-wd { background: #fff4e0; color: var(--warning); }
+    .icon-life { background: #ede9fe; color: var(--purple); }
+    .icon-setu { background: #e0f2fe; color: var(--info); }
+
+    .notif-body { flex: 1; }
+    .notif-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+    .notif-title { font-size: 15px; font-weight: 700; color: var(--navy); }
+    .notif-time { font-size: 12px; color: var(--muted); }
+    .notif-desc { font-size: 13.5px; color: #334155; line-height: 1.4; }
+
+    .badge { display: inline-flex; padding: 2px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge.success { background: #e8f8ee; color: var(--success); }
+    .badge.warning { background: #fff4e0; color: var(--warning); }
+    .badge.info { background: #e0f2fe; color: var(--info); }
+    .badge.purple { background: #ede9fe; color: var(--purple); }
+
+    .btn-ghost {
+      background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+
+    .empty-box {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-card);
+      padding: 40px 20px; text-align: center; color: var(--muted); font-size: 14px;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <a href="bb-dashboard.html" class="brand">
+      <span class="brand-badge"></span>
+      <span>Bharatiya Bazaar · Notifications</span>
+    </a>
+    <div id="topbarMemberInfo" class="member-chip hidden">
+      <span id="topbarMemberName">Member</span>
+      <span id="topbarCardNumber" class="badge info">MAIN</span>
+      <span id="topbarAvatar" class="avatar">M</span>
+      <button class="btn-ghost" onclick="logoutMember()">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-head">
+      <div>
+        <h1>Activity &amp; Notifications Feed</h1>
+        <p>सूचनाएं एवं गतिविधि · Real-time ledger credits, withdrawal status, rebirths, and rewards (Latest 50 events)</p>
+      </div>
+      <div class="nav-links">
+        <a href="bb-dashboard.html" class="nav-btn">← Dashboard</a>
+        <a href="bb-setu-kosh.html" class="nav-btn">Setu Kosh</a>
+        <a href="bb-calculator.html" class="nav-btn">Calculator</a>
+        <a href="bb-notifications.html" class="nav-btn active">Notifications</a>
+      </div>
+    </section>
+
+    <!-- FILTER TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="filterCategory('ALL')">All Activity (सभी)</button>
+      <button class="tab-btn" onclick="filterCategory('COMMISSION')">Commissions &amp; Credits (कमीशन)</button>
+      <button class="tab-btn" onclick="filterCategory('WITHDRAWAL')">Withdrawals (निकासी)</button>
+      <button class="tab-btn" onclick="filterCategory('LIFECYCLE')">Rebirth &amp; ACB (रीबर्थ/एसीबी)</button>
+      <button class="tab-btn" onclick="filterCategory('SETU_KOSH')">Setu Kosh Referrals (रेफरल)</button>
+    </div>
+
+    <!-- NOTIFICATIONS FEED CONTAINER -->
+    <div id="notificationsContainer">
+      <div class="empty-box">Loading notifications feed...</div>
+    </div>
+  </main>
+
+  <script>
+    let allNotifications = [];
+    let activeCategory = "ALL";
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatTime(isoStr) {
+      if (!isoStr) return "-";
+      const d = new Date(isoStr);
+      return d.toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+    }
+
+    function getMemberToken() {
+      return localStorage.getItem("jwt_token") || localStorage.getItem("bb_token");
+    }
+
+    function logoutMember() {
+      localStorage.removeItem("jwt_token");
+      localStorage.removeItem("bb_token");
+      localStorage.removeItem("member");
+      window.location.href = "bb-register.html";
+    }
+
+    async function initNotifications() {
+      const token = getMemberToken();
+      if (!token) {
+        window.location.href = "bb-register.html";
+        return;
+      }
+
+      try {
+        const [profRes, notifRes] = await Promise.all([
+          fetch("/api/members/profile", { headers: { "Authorization": `Bearer ${token}` } }),
+          fetch("/api/members/notifications", { headers: { "Authorization": `Bearer ${token}` } })
+        ]);
+
+        if (profRes.status === 401 || notifRes.status === 401) {
+          logoutMember();
+          return;
+        }
+
+        const profData = await profRes.json();
+        const notifData = await notifRes.json();
+
+        if (profData.success) {
+          document.getElementById("topbarMemberInfo").classList.remove("hidden");
+          document.getElementById("topbarMemberName").textContent = profData.data.name || "Member";
+          const card = profData.data.activeCard || profData.data.idCards?.[0];
+          if (card) document.getElementById("topbarCardNumber").textContent = card.cardNumber || "MAIN";
+        }
+
+        if (notifData.success) {
+          allNotifications = notifData.data || [];
+          renderFilteredFeed();
+        }
+      } catch (err) {
+        document.getElementById("notificationsContainer").innerHTML = `
+          <div class="empty-box" style="color:var(--danger);">${escapeHtml(err.message)}</div>
+        `;
+      }
+    }
+
+    function filterCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      event.target.classList.add("active");
+      renderFilteredFeed();
+    }
+
+    function renderFilteredFeed() {
+      const container = document.getElementById("notificationsContainer");
+      const filtered = activeCategory === "ALL" 
+        ? allNotifications 
+        : allNotifications.filter(n => n.category === activeCategory);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-box">
+            No activity notifications recorded in this category yet.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(n => {
+        let iconClass = "icon-comm";
+        let iconSymbol = "💰";
+
+        if (n.category === "WITHDRAWAL") {
+          iconClass = "icon-wd";
+          iconSymbol = "🏦";
+        } else if (n.category === "LIFECYCLE") {
+          iconClass = "icon-life";
+          iconSymbol = "🌱";
+        } else if (n.category === "SETU_KOSH") {
+          iconClass = "icon-setu";
+          iconSymbol = "🛍️";
+        }
+
+        return `
+          <div class="notif-card">
+            <div class="notif-icon ${iconClass}">${iconSymbol}</div>
+            <div class="notif-body">
+              <div class="notif-top">
+                <span class="notif-title">${escapeHtml(n.title)}</span>
+                <span class="notif-time">${formatTime(n.timestamp)}</span>
+              </div>
+              <div class="notif-desc">${escapeHtml(n.message)}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    window.addEventListener("DOMContentLoaded", initNotifications);
+  </script>
+</body>
+</html>

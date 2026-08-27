@@ -1,0 +1,57 @@
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { Member } from "../models/Member";
+
+const JWT_SECRET = process.env.JWT_SECRET || "default_jwt_secret";
+
+export default async function authMiddleware(req: Request, res: Response, next: NextFunction): Promise<any> {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      success: false,
+      error: { code: "UNAUTHORIZED", message: "Missing or invalid authorization header" }
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+
+    // Cross-auth protection: Reject VENDOR tokens on member endpoints
+    if (decoded.type === "VENDOR") {
+      return res.status(401).json({
+        success: false,
+        error: { code: "UNAUTHORIZED", message: "Vendor tokens cannot access member endpoints" }
+      });
+    }
+
+    // Attach member to request
+    const member = await Member.findById(decoded.id).exec();
+    if (!member) {
+      return res.status(401).json({
+        success: false,
+        error: { code: "UNAUTHORIZED", message: "Member not found" }
+      });
+    }
+
+    req.member = member;
+    req.loginContext = {
+      loginCardId: decoded.loginCardId || null,
+      cardId: decoded.loginCardId || null,
+      cardNumber: decoded.loginCardNumber || member.memberCode || "",
+      loginCardNumber: decoded.loginCardNumber || member.memberCode || "",
+      cardType: decoded.loginCardType || "MAIN",
+      loginCardType: decoded.loginCardType || "MAIN",
+      isSubCard: decoded.loginCardType ? decoded.loginCardType !== "MAIN" : false,
+      ownerMemberCode: member.memberCode || null
+    };
+
+    next();
+  } catch (err) {
+    return res.status(401).json({
+      success: false,
+      error: { code: "UNAUTHORIZED", message: "Invalid or expired token" }
+    });
+  }
+}

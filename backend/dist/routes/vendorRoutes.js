@@ -1,0 +1,53 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const vendorController = __importStar(require("../controllers/vendorController"));
+const vendorAuthMiddleware_1 = __importDefault(require("../middleware/vendorAuthMiddleware"));
+const validateMiddleware_1 = __importDefault(require("../middleware/validateMiddleware"));
+const schemas = __importStar(require("../validations/schemas"));
+const router = express_1.default.Router();
+// Public vendor registration & login
+router.post("/register", (0, validateMiddleware_1.default)(schemas.vendorRegisterSchema), vendorController.register);
+router.post("/login", (0, validateMiddleware_1.default)(schemas.loginSchema), vendorController.login);
+// Protected vendor routes
+router.get("/me", vendorAuthMiddleware_1.default, vendorController.getProfile);
+router.post("/sale", vendorAuthMiddleware_1.default, (0, validateMiddleware_1.default)(schemas.vendorSaleSchema), vendorController.recordSale);
+router.get("/settlements", vendorAuthMiddleware_1.default, vendorController.getSettlements);
+router.post("/settlement/early", vendorAuthMiddleware_1.default, vendorController.requestEarlySettlement);
+exports.default = router;

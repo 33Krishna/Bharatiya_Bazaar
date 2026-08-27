@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setu Kosh — Shopping Rewards | Bharatiya Bazaar (भारतीय बाज़ार)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --navy: #0d1b2a;
+      --navy-2: #14263b;
+      --teal: #0f9d9d;
+      --teal-dark: #0b7c7c;
+      --amber: #f5a623;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #17233a;
+      --muted: #64748b;
+      --border: #dbe4ef;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --info: #0369a1;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow: 0 10px 30px rgba(13, 27, 42, 0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Inter", "Noto Sans Devanagari", sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4 { font-family: "Poppins", "Noto Sans Devanagari", sans-serif; }
+
+    .topbar {
+      background: var(--navy); color: #fff; padding: 14px 22px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; position: sticky; top: 0; z-index: 20;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; color: #fff; }
+    .brand-badge {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle at center, var(--amber) 0 26%, var(--teal) 27% 54%, var(--navy-2) 55% 100%);
+    }
+
+    .member-chip { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.92); }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%; background: var(--teal);
+      display: grid; place-items: center; font-weight: 700; color: #fff;
+    }
+
+    .container { width: min(1200px, calc(100% - 32px)); margin: 24px auto 40px; }
+
+    .page-head { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
+    .page-head h1 { font-size: clamp(24px, 3vw, 32px); color: var(--navy); margin-bottom: 4px; }
+    .page-head p { color: var(--muted); font-size: 14.5px; }
+
+    .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav-btn {
+      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none;
+      background: #fff; color: var(--navy); border: 1px solid var(--border);
+    }
+    .nav-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-card); box-shadow: var(--shadow);
+    }
+
+    .panel { padding: 22px; margin-bottom: 20px; }
+    .panel h2 { font-size: 18px; color: var(--navy); margin-bottom: 8px; }
+
+    .badge { display: inline-flex; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge.success { background: #e8f8ee; color: var(--success); }
+    .badge.warning { background: #fff4e0; color: var(--warning); }
+    .badge.info { background: #e0f2fe; color: var(--info); }
+
+    .counter-card {
+      border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+      background: #fafcff; margin-bottom: 20px;
+    }
+    .counter-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .counter-amt { font-size: 28px; font-weight: 800; color: var(--navy); }
+
+    .progress-bar-bg {
+      height: 14px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin: 12px 0;
+    }
+    .progress-bar-fill {
+      height: 100%; background: linear-gradient(90deg, var(--teal), var(--amber));
+      border-radius: 999px; transition: width 0.4s ease; width: 0%;
+    }
+
+    .grid-3 {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px;
+    }
+    .mini-stat { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+    .mini-stat .lbl { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .mini-stat .val { font-size: 18px; font-weight: 700; color: var(--navy); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; font-size: 13px; }
+    th { background: #f8fafc; color: var(--navy); font-weight: 700; }
+
+    .btn-ghost {
+      background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+
+    /* TREE EXPLORER */
+    .tree-box {
+      border: 1px solid var(--border); border-radius: 10px; padding: 16px;
+      background: #fafcff; min-height: 200px; font-family: monospace; font-size: 13px;
+    }
+    .tree-node-item {
+      padding: 6px 10px; border-radius: 6px; background: #fff; border: 1px solid var(--border);
+      display: inline-flex; align-items: center; gap: 8px; margin: 4px 0;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 768px) {
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <a href="bb-dashboard.html" class="brand">
+      <span class="brand-badge"></span>
+      <span>Bharatiya Bazaar · Setu Kosh</span>
+    </a>
+    <div id="topbarMemberInfo" class="member-chip hidden">
+      <span id="topbarMemberName">Member</span>
+      <span id="topbarCardNumber" class="badge info">MAIN</span>
+      <span id="topbarAvatar" class="avatar">M</span>
+      <button class="btn-ghost" onclick="logoutMember()">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-head">
+      <div>
+        <h1>Setu Kosh — Shopping Rewards &amp; Tree</h1>
+        <p>सेतु कोष खरीदारी रिवॉर्ड्स · Margin accumulation towards free sub-IDs and 10-level binary distribution</p>
+      </div>
+      <div class="nav-links">
+        <a href="bb-dashboard.html" class="nav-btn">← Dashboard</a>
+        <a href="bb-setu-kosh.html" class="nav-btn active">Setu Kosh</a>
+        <a href="bb-calculator.html" class="nav-btn">Calculator</a>
+        <a href="bb-notifications.html" class="nav-btn">Notifications</a>
+      </div>
+    </section>
+
+    <!-- SECTION 1: LIVE COUNTER PROGRESS -->
+    <section class="card panel">
+      <h2>1. ID Creation Counter Progress</h2>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:14px;">
+        Every purchase at a verified vendor accumulates margin. Reaching ₹1,000 (100,000 paise) generates a FREE Setu Kosh sub-ID into the national binary tree!
+      </p>
+
+      <div class="counter-card">
+        <div class="counter-top">
+          <div>
+            <div style="font-size:12.5px; color:var(--muted); font-weight:600;">Current Accumulated Purchases</div>
+            <div class="counter-amt" id="cntCurrentPaise">₹0.00</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12.5px; color:var(--muted); font-weight:600;">Milestone Target</div>
+            <div style="font-size:20px; font-weight:700; color:var(--teal);" id="cntTargetPaise">₹1,000.00</div>
+          </div>
+        </div>
+
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="cntProgressFill"></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted);">
+          <span id="cntProgressPctText">0% Complete</span>
+          <span id="cntRemainingText">₹1,000.00 remaining for next ID</span>
+        </div>
+
+        <div class="grid-3">
+          <div class="mini-stat">
+            <div class="lbl">Total Sub-IDs Earned</div>
+            <div class="val" id="valTotalIdsEarned">0</div>
+          </div>
+          <div class="mini-stat">
+            <div class="lbl">Accumulated Margin</div>
+            <div class="val" id="valAccumulatedMargin">₹0.00</div>
+          </div>
+          <div class="mini-stat">
+            <div class="lbl">Next Generated ID Type</div>
+            <div class="val" style="color:var(--teal);">SUB CARD</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: 10-LEVEL SETU KOSH BINARY TREE EXPLORER -->
+    <section class="card panel">
+      <h2>2. Setu Kosh 10-Level Tree Explorer</h2>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:14px;">
+        Inspect the binary placement structure of Setu Kosh nodes funding upline shoppers.
+      </p>
+
+      <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+        <label style="font-size:13px; font-weight:700; color:var(--navy);" for="treeRootPos">Root Position #</label>
+        <input type="number" id="treeRootPos" value="1" min="1" style="width:100px; padding:6px 10px; border:1px solid var(--border); border-radius:6px;" />
+        <button class="nav-btn active" style="font-size:12px; padding:6px 14px;" onclick="loadTreeData()">Load Tree</button>
+      </div>
+
+      <div class="tree-box" id="treeViewContainer">
+        Loading Setu Kosh Tree Explorer...
+      </div>
+    </section>
+
+    <!-- SECTION 3: VENDOR REFERRAL BONUSES (FIRST-REFERRER-WINS) -->
+    <section class="card panel">
+      <h2>3. Vendor Referral Bonus Earnings</h2>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">
+        0.25% (25 bps) perpetual referral bonus on every customer purchase at stores you referred.
+      </p>
+
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Referred Store</th>
+              <th>Category</th>
+              <th>Customer Purchase</th>
+              <th>Bonus Earned (0.25%)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="referralBonusesBody">
+            <tr>
+              <td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">Loading referral bonuses...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatCurrency(paise) {
+      const rupees = (Number(paise || 0) / 100);
+      return "₹" + rupees.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "-";
+      const d = new Date(dateStr);
+      return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function getMemberToken() {
+      return localStorage.getItem("jwt_token") || localStorage.getItem("bb_token");
+    }
+
+    function logoutMember() {
+      localStorage.removeItem("jwt_token");
+      localStorage.removeItem("bb_token");
+      localStorage.removeItem("member");
+      window.location.href = "bb-register.html";
+    }
+
+    async function initSetuKoshPage() {
+      const token = getMemberToken();
+      if (!token) {
+        window.location.href = "bb-register.html";
+        return;
+      }
+
+      try {
+        const [profRes, cntRes] = await Promise.all([
+          fetch("/api/members/profile", { headers: { "Authorization": `Bearer ${token}` } }),
+          fetch("/api/setu-kosh/counter", { headers: { "Authorization": `Bearer ${token}` } })
+        ]);
+
+        if (profRes.status === 401 || cntRes.status === 401) {
+          logoutMember();
+          return;
+        }
+
+        const profData = await profRes.json();
+        const cntData = await cntRes.json();
+
+        if (profData.success) {
+          const m = profData.data;
+          document.getElementById("topbarMemberInfo").classList.remove("hidden");
+          document.getElementById("topbarMemberName").textContent = m.name || "Member";
+          const card = m.activeCard || m.idCards?.[0];
+          if (card) document.getElementById("topbarCardNumber").textContent = card.cardNumber || "MAIN";
+        }
+
+        if (cntData.success) {
+          renderCounter(cntData.data);
+          renderReferralBonuses(cntData.data.referralBonuses || []);
+        }
+
+        await loadTreeData();
+      } catch (err) {
+        console.error("Failed to load Setu Kosh data:", err);
+      }
+    }
+
+    function renderCounter(data) {
+      const current = data.counterPaise || 0;
+      const target = data.thresholdPaise || 100000;
+      const pct = Math.min(100, Math.floor((current * 100) / target));
+      const rem = Math.max(0, target - current);
+
+      document.getElementById("cntCurrentPaise").textContent = formatCurrency(current);
+      document.getElementById("cntTargetPaise").textContent = formatCurrency(target);
+      document.getElementById("cntProgressFill").style.width = `${pct}%`;
+      document.getElementById("cntProgressPctText").textContent = `${pct}% Complete`;
+      document.getElementById("cntRemainingText").textContent = `${formatCurrency(rem)} remaining for next ID`;
+
+      document.getElementById("valTotalIdsEarned").textContent = String(data.idsCreated || 0);
+      document.getElementById("valAccumulatedMargin").textContent = formatCurrency(data.accumulatedMarginPaise || 0);
+    }
+
+    function renderReferralBonuses(list) {
+      const tbody = document.getElementById("referralBonusesBody");
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">No vendor referral bonuses earned yet. Refer local stores to start earning 0.25% on every customer purchase!</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(b => `
+        <tr>
+          <td>${formatDate(b.createdAt)}</td>
+          <td><strong>${escapeHtml(b.vendor?.businessName || 'Store')}</strong></td>
+          <td><span class="badge info">${escapeHtml(b.vendor?.category || 'GENERAL')}</span></td>
+          <td>${formatCurrency(b.purchaseAmountPaise)}</td>
+          <td><strong style="color:var(--success);">${formatCurrency(b.bonusPaise)}</strong></td>
+          <td><span class="badge ${b.status === 'WITHDRAWABLE' ? 'success' : 'warning'}">${escapeHtml(b.status)}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    async function loadTreeData() {
+      const rootPos = document.getElementById("treeRootPos").value || 1;
+      const container = document.getElementById("treeViewContainer");
+      container.innerHTML = "Loading Setu Kosh Tree...";
+
+      const token = getMemberToken();
+      try {
+        const res = await fetch(`/api/setu-kosh/tree?root=${rootPos}&depth=10`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error?.message || "Node not found");
+
+        const t = data.data;
+        container.innerHTML = `
+          <div style="margin-bottom:10px;">
+            <strong>Root Node #${t.rootNode.globalPosition}:</strong> ${escapeHtml(t.rootNode.member?.name)} (${escapeHtml(t.rootNode.member?.memberCode)}) | Depth: Level ${t.rootNode.depthLevel}
+          </div>
+          <div>${renderTreeBranch(t.tree, 0)}</div>
+        `;
+      } catch (err) {
+        container.innerHTML = `<span style="color:var(--danger);">${escapeHtml(err.message)}</span>`;
+      }
+    }
+
+    function renderTreeBranch(node, depth) {
+      if (!node) return "";
+      const indent = "&nbsp;&nbsp;&nbsp;&nbsp;".repeat(depth);
+      const isLeft = node.side === "LEFT";
+      const icon = isLeft ? "◀ L" : "R ▶";
+
+      let html = `<div>${indent} <strong>${icon} Pos #${node.position} (L${node.level}):</strong> ${escapeHtml(node.memberName)} (${escapeHtml(node.memberCode)})</div>`;
+
+      if (node.children?.LEFT) {
+        html += renderTreeBranch(node.children.LEFT, depth + 1);
+      }
+      if (node.children?.RIGHT) {
+        html += renderTreeBranch(node.children.RIGHT, depth + 1);
+      }
+      return html;
+    }
+
+    window.addEventListener("DOMContentLoaded", initSetuKoshPage);
+  </script>
+</body>
+</html>

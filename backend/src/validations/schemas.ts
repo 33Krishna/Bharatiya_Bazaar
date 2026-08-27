@@ -1,0 +1,84 @@
+import { z } from "zod";
+
+export const registerSchema = z.object({
+  body: z.object({
+    name: z.string().min(2, "Name is required"),
+    mobile: z.string().length(10, "Mobile must be 10 digits").regex(/^\d+$/),
+    email: z.string().email("Invalid email format").optional(),
+    address: z.string().optional(),
+    pinCode: z.string().optional(),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    referralCode: z.string().optional(),
+    side: z.enum(["LEFT", "RIGHT"]).optional()
+  })
+});
+
+export const loginSchema = z.object({
+  body: z.object({
+    mobile: z.string().min(3, "Enter Member ID or Mobile"),
+    password: z.string().min(1, "Password is required")
+  })
+});
+
+export const adminLoginSchema = z.object({
+  body: z.object({
+    email: z.string().email("Invalid email format"),
+    password: z.string().min(1, "Password is required")
+  })
+});
+
+export const kycSchema = z.object({
+  body: z.object({
+    panNumber: z.string().min(10, "PAN must be 10 characters").optional(),
+    panCardUrl: z.string().url("Must be a valid URL").optional(),
+    aadhaarFrontUrl: z.string().url("Must be a valid URL").optional(),
+    aadhaarBackUrl: z.string().url("Must be a valid URL").optional()
+  })
+});
+
+export const withdrawalRequestSchema = z.object({
+  body: z.object({
+    idCardId: z.string().optional(),
+    method: z.enum(["BANK", "UPI", "WALLET", "MEMBER_WALLET", "VOUCHER_CONVERSION"]).optional(),
+    amountPaise: z.number().positive("Amount must be positive"),
+    paymentDetails: z.any().optional(),
+    idempotencyKey: z.string().optional()
+  })
+});
+
+export const vendorSaleSchema = z.object({
+  body: z.object({
+    memberId: z.string().optional(),
+    buyerCode: z.string().optional(),
+    cardNumber: z.string().optional(),
+    memberCode: z.string().optional(),
+    idCardId: z.string().optional(),
+    amountPaise: z.number().positive("Amount must be positive"),
+    idempotencyKey: z.string().optional()
+  })
+});
+
+export const vendorRegisterSchema = z.object({
+  body: z.object({
+    name: z.string().min(2, "Owner name is required"),
+    businessName: z.string().min(2, "Business name is required"),
+    mobile: z.string().length(10, "Mobile must be 10 digits").regex(/^\d+$/),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    category: z.string().optional().default("GENERAL"),
+    entityType: z.enum(["INDIVIDUAL", "COMPANY"]).optional().default("INDIVIDUAL"),
+    panNumber: z.string().min(10, "PAN must be 10 characters").optional(),
+    gstin: z.string().optional(),
+    address: z.string().optional(),
+    pinCode: z.string().optional(),
+    payoutMethod: z.enum(["WALLET", "BANK"]).optional().default("BANK"),
+    referrerCode: z.string().optional(),
+    referrerMemberCode: z.string().optional()
+  })
+});
+
+export const settingUpdateSchema = z.object({
+  body: z.object({
+    value: z.string().min(1, "Value is required"),
+    description: z.string().optional()
+  })
+});
