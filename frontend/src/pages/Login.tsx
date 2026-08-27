@@ -1,47 +1,56 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { LogIn, ShieldAlert, Store, UserCheck, ArrowLeft } from "lucide-react";
 
 export default function Login() {
+  const [role, setRole] = useState<"MEMBER" | "VENDOR" | "ADMIN">("MEMBER");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent, type: "MEMBER" | "VENDOR" | "ADMIN") => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!mobile || !password) {
-      setError("Please fill in all fields.");
+    setError(null);
+
+    if (!mobile.trim()) {
+      setError(`Please enter a valid ${role === "ADMIN" ? "Email" : "ID, Card, or Mobile"}.`);
+      return;
+    }
+    if (!password) {
+      setError("Please enter your password.");
       return;
     }
 
-    setError(null);
     setLoading(true);
 
     try {
       const endpoint =
-        type === "ADMIN"
+        role === "ADMIN"
           ? "/api/auth/admin/login"
-          : type === "VENDOR"
+          : role === "VENDOR"
           ? "/api/vendors/login"
           : "/api/auth/login";
+
+      const payload =
+        role === "ADMIN"
+          ? { email: mobile.trim(), password }
+          : { mobile: mobile.trim(), password };
 
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobile, email: mobile, password })
+        body: JSON.stringify(payload)
       });
 
       const data = await res.json();
 
-      if (data.success) {
-        // Successful login
+      if (res.ok && data.success) {
         const token = data.data.token;
         const user = data.data.member || data.data.vendor || data.data.admin;
-        const role = type;
         const ctx = data.data.loginContext || null;
 
         login(token, role, user, ctx);
@@ -55,153 +64,190 @@ export default function Login() {
           navigate("/dashboard");
         }
       } else {
-        setError(data.error?.message || "Invalid credentials. Please try again.");
+        setError(data.error?.message || "Invalid credentials. Please verify details.");
       }
     } catch (err) {
       console.error(err);
-      setError("Server connection failure. Please verify backend state.");
+      setError("Network error. Is the server running?");
     } finally {
       setLoading(false);
     }
   };
 
+  const styles = `
+    :root {
+      --navy: #0d1b2a;
+      --navy-2: #14263b;
+      --teal: #0f9d9d;
+      --teal-dark: #0b7c7c;
+      --amber: #f5a623;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #17233a;
+      --muted: #64748b;
+      --border: #dbe4ef;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --info: #0369a1;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow: 0 10px 30px rgba(13, 27, 42, 0.08);
+    }
+
+    .topbar {
+      background: var(--navy); color: #fff; padding: 14px 22px;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; color: #fff; }
+    .brand-badge {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle at center, var(--amber) 0 26%, var(--teal) 27% 54%, var(--navy-2) 55% 100%);
+    }
+
+    .container { width: min(680px, calc(100% - 32px)); margin: 24px auto 40px; }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-card); box-shadow: var(--shadow);
+    }
+
+    .panel { padding: 22px; text-align: left; }
+    .panel h2 { font-size: 20px; color: var(--navy); margin-bottom: 6px; }
+    .panel .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+
+    .stepper {
+      display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;
+    }
+    .step-dot {
+      display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700;
+      color: var(--muted); padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border);
+      cursor: pointer; background: #fff; transition: all 0.2s ease;
+    }
+    .step-dot.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .step-dot:hover { border-color: var(--teal); }
+
+    .field-label { display: block; font-size: 13px; font-weight: 700; color: var(--navy); margin: 14px 0 6px; }
+    .field-label .hindi { font-weight: 400; color: var(--muted); }
+
+    input {
+      width: 100%; border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px; font-size: 15px; color: var(--navy); background: #fff; outline: none;
+    }
+    input:focus { border-color: var(--teal); }
+
+    .btn-primary {
+      width: 100%; margin-top: 16px; background: var(--teal); color: #fff; border: none;
+      padding: 14px 16px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 700; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--teal-dark); }
+    .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .note {
+      border-left: 4px solid var(--teal); background: #f3fbfb; color: #155e5e;
+      padding: 11px 12px; border-radius: 8px; font-size: 13px; margin-top: 14px;
+    }
+    .note.error { border-left-color: var(--danger); background: #fee2e2; color: #991b1b; }
+
+    .toggle-link { text-align: center; margin-top: 16px; font-size: 13.5px; }
+    .toggle-link a { color: var(--teal); text-decoration: none; font-weight: 700; }
+  `;
+
   return (
-    <div style={{ maxWidth: "480px", margin: "60px auto", padding: "0 20px" }}>
-      <div style={{ marginBottom: "24px" }}>
-        <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "14px", color: "var(--text-secondary)" }}>
-          <ArrowLeft size={16} /> Back to home
+    <div style={{ background: "linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%)", minHeight: "100vh" }}>
+      <style dangerouslySetInnerHTML={{ __html: styles }} />
+
+      {/* TOPBAR */}
+      <header className="topbar">
+        <Link to="/" className="brand">
+          <span className="brand-badge"></span>
+          <span>Bharatiya Bazaar · भारतीय बाज़ार</span>
         </Link>
-      </div>
+        <Link to="/" style={{ color: "#fff", textDecoration: "none", fontSize: "14px" }}>← Home</Link>
+      </header>
 
-      <div className="glass-card">
-        <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <h2 style={{ fontSize: "28px", fontWeight: 800 }}>Account Login</h2>
-          <p style={{ color: "var(--text-secondary)", fontSize: "14px" }}>
-            Sign in to access your cooperative profile
+      <main className="container">
+        {/* Portal selection tabs using step-dots */}
+        <div className="stepper">
+          <span className={`step-dot ${role === "MEMBER" ? "active" : ""}`} onClick={() => { setRole("MEMBER"); setError(null); }}>
+            Member Login
+          </span>
+          <span className={`step-dot ${role === "VENDOR" ? "active" : ""}`} onClick={() => { setRole("VENDOR"); setError(null); }}>
+            Merchant Login
+          </span>
+          <span className={`step-dot ${role === "ADMIN" ? "active" : ""}`} onClick={() => { setRole("ADMIN"); setError(null); }}>
+            Admin Login
+          </span>
+        </div>
+
+        {/* Login Panel */}
+        <section className="card panel">
+          <h2>Welcome Back</h2>
+          <p className="subtitle">
+            {role === "MEMBER" && "Login to access your member dashboard & wallet"}
+            {role === "VENDOR" && "Login to manage your merchant outlet & settlements"}
+            {role === "ADMIN" && "Login to access administrative control & verification panels"}
           </p>
-        </div>
 
-        {error && (
-          <div className="alert-box alert-danger">
-            <ShieldAlert size={18} style={{ flexShrink: 0 }} />
-            <span>{error}</span>
-          </div>
-        )}
+          <form onSubmit={handleLoginSubmit}>
+            {role === "ADMIN" ? (
+              <>
+                <label className="field-label">
+                  Admin Email Address <span className="hindi">प्रशासक ईमेल</span>
+                </label>
+                <input
+                  type="email"
+                  placeholder="admin@bharatiyabazaar.com"
+                  value={mobile}
+                  onChange={e => setMobile(e.target.value)}
+                  required
+                />
+              </>
+            ) : (
+              <>
+                <label className="field-label">
+                  {role === "MEMBER" ? "Member ID, Card Number, or Mobile" : "Merchant Mobile or ID"}{" "}
+                  <span className="hindi">{role === "MEMBER" ? "सदस्य ID / कार्ड / मोबाइल" : "मोबाइल नंबर / ID"}</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder={role === "MEMBER" ? "e.g. BB10015, SB10016, or 9876543210" : "e.g. V10002 or 9876543210"}
+                  value={mobile}
+                  onChange={e => setMobile(e.target.value)}
+                  required
+                />
+              </>
+            )}
 
-        {/* Tab Selection */}
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            marginBottom: "24px",
-            background: "rgba(255,255,255,0.02)",
-            padding: "4px",
-            borderRadius: "var(--radius-sm)"
-          }}
-        >
-          {/* Member Login panel */}
-          <button
-            onClick={() => handleLoginSubmit("MEMBER")}
-            style={{
-              flex: 1,
-              padding: "10px",
-              background: "var(--primary)",
-              border: "none",
-              borderRadius: "var(--radius-sm)",
-              fontWeight: 600,
-              cursor: "pointer"
-            }}
-          >
-            Member
-          </button>
-        </div>
-
-        <form onSubmit={e => handleLogin(e, "MEMBER")}>
-          <div className="form-group">
-            <label className="form-label">Username / Card Number / Mobile</label>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="e.g. BB10001 or 9876543210"
-              value={mobile}
-              onChange={e => setMobile(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-group" style={{ marginBottom: "24px" }}>
-            <label className="form-label">Password</label>
+            <label className="field-label">
+              Password <span className="hindi">पासवर्ड</span>
+            </label>
             <input
               type="password"
-              className="form-input"
-              placeholder="••••••••"
+              placeholder="Enter password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
             />
+
+            {error && <div className="note error">{error}</div>}
+
+            <button className="btn-primary" type="submit" disabled={loading}>
+              {loading ? "Authenticating..." : "Login"}
+            </button>
+          </form>
+
+          <div className="toggle-link">
+            New to Bharatiya Bazaar?{" "}
+            {role === "VENDOR" ? (
+              <Link to="/vendor-register">Register as Merchant</Link>
+            ) : (
+              <Link to="/register">Register Now</Link>
+            )}
           </div>
-
-          <button type="submit" className="btn btn-primary" style={{ width: "100%" }} disabled={loading}>
-            <LogIn size={18} /> {loading ? "Authenticating..." : "Sign In"}
-          </button>
-        </form>
-
-        {/* Alternate login access */}
-        <div style={{ marginTop: "24px", display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
-          <button
-            onClick={e => {
-              setMobile("");
-              setPassword("");
-              setError(null);
-              // prompt for Merchant login
-              const m = prompt("Enter Partner Merchant Mobile/ID:");
-              const p = prompt("Enter Password:");
-              if (m && p) {
-                setMobile(m);
-                setPassword(p);
-                // Trigger vendor login
-                const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
-                setTimeout(() => handleLogin(fakeEvent, "VENDOR"), 100);
-              }
-            }}
-            style={{ background: "none", border: "none", color: "var(--primary)", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}
-          >
-            <Store size={14} /> Merchant Portal
-          </button>
-
-          <button
-            onClick={e => {
-              setMobile("");
-              setPassword("");
-              setError(null);
-              const m = prompt("Enter Admin Email:");
-              const p = prompt("Enter Password:");
-              if (m && p) {
-                setMobile(m);
-                setPassword(p);
-                // Trigger admin login
-                const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
-                setTimeout(() => handleLogin(fakeEvent, "ADMIN"), 100);
-              }
-            }}
-            style={{ background: "none", border: "none", color: "var(--info)", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}
-          >
-            <UserCheck size={14} /> Admin Access
-          </button>
-        </div>
-
-        <div style={{ marginTop: "24px", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "20px", textAlign: "center", fontSize: "14px" }}>
-          <span style={{ color: "var(--text-secondary)" }}>New to Bharatiya Bazaar?</span>{" "}
-          <Link to="/register" style={{ color: "var(--primary)", fontWeight: 600 }}>
-            Create Account
-          </Link>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
-
-  function handleLoginSubmit(type: "MEMBER" | "VENDOR" | "ADMIN") {
-    // Just helper to reset fields
-    setError(null);
-  }
 }

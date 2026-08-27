@@ -8,6 +8,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import VendorRegister from "./pages/VendorRegister";
+import Calculator from "./pages/Calculator";
 
 // Member Pages
 import Dashboard from "./pages/Dashboard";
@@ -67,6 +68,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/vendor-register" element={<VendorRegister />} />
+          <Route path="/calculator" element={<Calculator />} />
 
           {/* Member Protected Routes */}
           <Route

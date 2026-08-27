@@ -174,9 +174,9 @@ export default function Landing() {
         <div className="utility-inner">
           <div>🇮🇳 स्वदेशी सामुदायिक मंच · Bharatiya Bazaar Commerce Network</div>
           <div className="utility-links">
-            <Link to="/login">हिंदी पोर्टल (Hindi)</Link>
+            <Link to="/register">हिंदी पोर्टल (Hindi)</Link>
             <span>·</span>
-            <Link to="/wallet?guest=true">कैलकुलेटर</Link>
+            <Link to="/calculator">कैलकुलेटर</Link>
             <span>·</span>
             <Link to="/login">प्रशासक लॉगिन (Admin)</Link>
           </div>
@@ -193,7 +193,7 @@ export default function Landing() {
           <nav className="nav-menu">
             <Link to="/dashboard">Member Portal</Link>
             <Link to="/setu-kosh">Setu Kosh</Link>
-            <Link to="/wallet?guest=true">Calculator</Link>
+            <Link to="/calculator">Calculator</Link>
             <Link to="/dashboard">Notifications</Link>
             <Link to="/vendor-register">Merchant Onboarding</Link>
           </nav>
@@ -266,7 +266,7 @@ export default function Landing() {
               <li><Link to="/register">Member Registration</Link></li>
               <li><Link to="/login">Member Login &amp; Wallet</Link></li>
               <li><Link to="/login">हिंदी डैशबोर्ड (Hindi Portal)</Link></li>
-              <li><Link to="/wallet?guest=true">TDS &amp; Withdrawal Calculator</Link></li>
+              <li><Link to="/calculator">TDS &amp; Withdrawal Calculator</Link></li>
               <li><Link to="/dashboard">Notifications Center</Link></li>
             </ul>
           </div>
@@ -282,7 +282,7 @@ export default function Landing() {
           <div className="footer-col">
             <h4>Compliance &amp; Legal</h4>
             <ul>
-              <li><Link to="/wallet?guest=true">Section 194H / 194R / 194C TDS</Link></li>
+              <li><Link to="/calculator">Section 194H / 194R / 194C TDS</Link></li>
               <li><Link to="/login">Component Design System</Link></li>
             </ul>
           </div>
