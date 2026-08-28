@@ -246,7 +246,7 @@ export default function Register() {
       }
 
       setAllCreatedCards(cardsList);
-      handleGoToStep(5);
+      handleGoToStep(4);
 
     } catch (err: any) {
       setSubmitError(err.message || "Failed to finalize registration.");
@@ -425,8 +425,7 @@ export default function Register() {
               <span className={`step-dot ${step === 1 ? "active" : step > 1 ? "done" : ""}`}>1 Eligibility</span>
               <span className={`step-dot ${step === 2 ? "active" : step > 2 ? "done" : ""}`}>2 Basic Info</span>
               <span className={`step-dot ${step === 3 ? "active" : step > 3 ? "done" : ""}`}>3 Sponsor</span>
-              <span className={`step-dot ${step === 4 ? "active" : step > 4 ? "done" : ""}`}>4 Payment</span>
-              <span className={`step-dot ${step === 5 ? "active" : step > 5 ? "done" : ""}`}>5 Confirm</span>
+              <span className={`step-dot ${step === 4 ? "active" : step > 4 ? "done" : ""}`}>4 Confirm</span>
             </div>
 
             {/* STEP 1: ELIGIBILITY CHECK */}
@@ -536,59 +535,22 @@ export default function Register() {
                   </div>
                 )}
 
-                <button className="btn-primary" onClick={() => handleGoToStep(4)} style={{ marginTop: "20px" }}>Continue</button>
+                {submitError && <div className="note error">{submitError}</div>}
+
+                <button 
+                  className="btn-primary" 
+                  onClick={handleRegisterSubmit} 
+                  disabled={submitting} 
+                  style={{ marginTop: "20px" }}
+                >
+                  {submitting ? "Processing Activation..." : "Complete Registration & Activate"}
+                </button>
                 <button className="btn-ghost" onClick={() => handleGoToStep(2)}>Back</button>
               </section>
             )}
 
-            {/* STEP 4: PAYMENT SELECTION */}
+            {/* STEP 4: REGISTRATION COMPLETE CONFIRMATION */}
             {step === 4 && (
-              <section className="card panel">
-                <h2>Activate your membership</h2>
-                <p className="subtitle">Joining kit · सदस्यता सक्रिय करें</p>
-
-                <div className="kit-list">
-                  <div className="kit-item"><span className="kit-check">✓</span> 1 MAIN ID · ACB eligibility · Sponsor bonuses</div>
-                  <div className="kit-item"><span className="kit-check">✓</span> AutoPool entry for every ID created</div>
-                  <div className="kit-item"><span className="kit-check">✓</span> Auto-placed in MY SYSTEM tree</div>
-                </div>
-
-                {/* Quantity Stepper */}
-                <div className="qty-stepper">
-                  <div className="label">
-                    How many IDs?
-                    <span className="hindi">कितने ID खरीदना चाहते हैं?</span>
-                  </div>
-                  <div className="qty-controls">
-                    <button className="qty-btn" type="button" onClick={() => handleQtyChange(qty - 1)} disabled={qty <= 1}>−</button>
-                    <span className="qty-val">{qty}</span>
-                    <button className="qty-btn" type="button" onClick={() => handleQtyChange(qty + 1)} disabled={qty >= 10}>+</button>
-                  </div>
-                </div>
-
-                <div className="price-row">
-                  <div>
-                    <div className="plabel">₹600 × {qty} ID(s)</div>
-                    <div className="plabel muted" style={{ fontSize: "11.5px", marginTop: "2px" }}>1 MAIN + {qty - 1} SUB</div>
-                  </div>
-                  <div className="ptotal">₹{(600 * qty).toFixed(2)}</div>
-                </div>
-
-                {submitError && <div className="note error">{submitError}</div>}
-
-                <button className="btn-primary" onClick={handleRegisterSubmit} disabled={submitting}>
-                  {submitting ? "Processing Activation..." : qty === 1 ? "Pay ₹600 & Activate" : `Pay ₹${(600 * qty).toLocaleString()} & Create ${qty} IDs`}
-                </button>
-                <button className="btn-ghost" onClick={() => handleGoToStep(3)}>Back</button>
-
-                <div className="note" style={{ marginTop: "14px" }}>
-                  <strong>💡 Why buy more?</strong> Each extra SUB ID earns independently in AutoPool and strengthens your MY SYSTEM legs. ACB belongs to your MAIN ID only.
-                </div>
-              </section>
-            )}
-
-            {/* STEP 5: REGISTRATION COMPLETE CONFIRMATION */}
-            {step === 5 && (
               <section className="card panel">
                 <h2>Welcome to Bharatiya Bazaar! 🎉</h2>
                 <p className="subtitle">Your membership is active.</p>

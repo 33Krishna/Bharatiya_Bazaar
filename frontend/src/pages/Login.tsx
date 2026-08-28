@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-export default function Login() {
-  const [role, setRole] = useState<"MEMBER" | "VENDOR" | "ADMIN">("MEMBER");
+interface LoginProps {
+  mode?: "public" | "admin" | "franchise";
+}
+
+export default function Login({ mode = "public" }: LoginProps) {
+  const initialRole = mode === "admin" ? "ADMIN" : mode === "franchise" ? "FRANCHISE" : "MEMBER";
+  const [role, setRole] = useState<"MEMBER" | "VENDOR" | "ADMIN" | "FRANCHISE">(initialRole);
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -28,12 +33,16 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const endpoint =
-        role === "ADMIN"
-          ? "/api/auth/admin/login"
-          : role === "VENDOR"
-          ? "/api/vendors/login"
-          : "/api/auth/login";
+      let endpoint = "";
+      if (role === "ADMIN") {
+        endpoint = "/api/auth/admin/login";
+      } else if (role === "VENDOR") {
+        endpoint = "/api/vendors/login";
+      } else if (role === "FRANCHISE") {
+        endpoint = "/api/franchise/login";
+      } else {
+        endpoint = "/api/auth/login";
+      }
 
       const payload =
         role === "ADMIN"
@@ -50,10 +59,10 @@ export default function Login() {
 
       if (res.ok && data.success) {
         const token = data.data.token;
-        const user = data.data.member || data.data.vendor || data.data.admin;
+        const user = data.data.member || data.data.vendor || data.data.admin || data.data.franchise;
         const ctx = data.data.loginContext || null;
 
-        login(token, role, user, ctx);
+        login(token, role === "FRANCHISE" ? "MEMBER" : role, user, ctx);
 
         // Redirect based on role
         if (role === "ADMIN") {
@@ -168,18 +177,31 @@ export default function Login() {
       </header>
 
       <main className="container">
-        {/* Portal selection tabs using step-dots */}
-        <div className="stepper">
-          <span className={`step-dot ${role === "MEMBER" ? "active" : ""}`} onClick={() => { setRole("MEMBER"); setError(null); }}>
-            Member Login
-          </span>
-          <span className={`step-dot ${role === "VENDOR" ? "active" : ""}`} onClick={() => { setRole("VENDOR"); setError(null); }}>
-            Merchant Login
-          </span>
-          <span className={`step-dot ${role === "ADMIN" ? "active" : ""}`} onClick={() => { setRole("ADMIN"); setError(null); }}>
-            Admin Login
-          </span>
-        </div>
+        {/* Portal selection tabs based on view mode */}
+        {mode === "public" && (
+          <div className="stepper">
+            <span className={`step-dot ${role === "MEMBER" ? "active" : ""}`} onClick={() => { setRole("MEMBER"); setError(null); }}>
+              Member Login
+            </span>
+            <span className={`step-dot ${role === "VENDOR" ? "active" : ""}`} onClick={() => { setRole("VENDOR"); setError(null); }}>
+              Merchant Login
+            </span>
+          </div>
+        )}
+        {mode === "admin" && (
+          <div className="stepper">
+            <span className="step-dot active">
+              Admin Login
+            </span>
+          </div>
+        )}
+        {mode === "franchise" && (
+          <div className="stepper">
+            <span className="step-dot active">
+              Franchise Login
+            </span>
+          </div>
+        )}
 
         {/* Login Panel */}
         <section className="card panel">
@@ -188,6 +210,7 @@ export default function Login() {
             {role === "MEMBER" && "Login to access your member dashboard & wallet"}
             {role === "VENDOR" && "Login to manage your merchant outlet & settlements"}
             {role === "ADMIN" && "Login to access administrative control & verification panels"}
+            {role === "FRANCHISE" && "Login to access your local franchise node panel"}
           </p>
 
           <form onSubmit={handleLoginSubmit}>
@@ -199,6 +222,19 @@ export default function Login() {
                 <input
                   type="email"
                   placeholder="admin@bharatiyabazaar.com"
+                  value={mobile}
+                  onChange={e => setMobile(e.target.value)}
+                  required
+                />
+              </>
+            ) : role === "FRANCHISE" ? (
+              <>
+                <label className="field-label">
+                  Franchise Code, Mobile, or Email <span className="hindi">फ्रेंचाइजी कोड / मोबाइल / ईमेल</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. FR10001 or 9876543210"
                   value={mobile}
                   onChange={e => setMobile(e.target.value)}
                   required
@@ -242,6 +278,8 @@ export default function Login() {
             New to Bharatiya Bazaar?{" "}
             {role === "VENDOR" ? (
               <Link to="/vendor-register">Register as Merchant</Link>
+            ) : role === "FRANCHISE" ? (
+              <Link to="/register">Register as Member</Link>
             ) : (
               <Link to="/register">Register Now</Link>
             )}

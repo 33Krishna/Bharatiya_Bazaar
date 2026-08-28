@@ -65,7 +65,9 @@ function App() {
         <Routes>
           {/* Guest/Public Routes */}
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login mode="public" />} />
+          <Route path="/admin-login" element={<Login mode="admin" />} />
+          <Route path="/franchise-login" element={<Login mode="franchise" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/vendor-register" element={<VendorRegister />} />
           <Route path="/calculator" element={<Calculator />} />
